@@ -1,3 +1,18 @@
+![weathercalendardisplay](https://user-images.githubusercontent.com/57550673/232158372-53afb045-5c88-42e3-b16c-a12ee70ce975.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Instructions on setting up a Raspberry Pi Zero WH with a Waveshare ePaper 7.5 Inch HAT.
 The screen will display date, time, weather icon with high and low, and calendar entries.
 
