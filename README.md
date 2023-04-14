@@ -1,17 +1,17 @@
 ![weathercalendardisplay](https://user-images.githubusercontent.com/57550673/232158372-53afb045-5c88-42e3-b16c-a12ee70ce975.jpg)
 
+This version is modified to show both the current weather and the forecast from the Accuweather provider and ensures that the events from Google Calendar are displayed with the correct time (for some reason it was not in the correct time zone).
 
+The files that have changes from the original:
+env.sh : Added the time zone variable
+screen-template.1.svg : Changed/added layout items to accomodate everything
+screen-weather-get.py : Made changes so that it displays everything in the new layout
+accuweather.py: Added current weather
+google.py: Added time zone to correct time of events
 
+I also changed the font to Roboto.
 
-
-
-
-
-
-
-
-
-
+You still need to follow the directions from mendhak's repository to set it all up:
 
 Instructions on setting up a Raspberry Pi Zero WH with a Waveshare ePaper 7.5 Inch HAT.
 The screen will display date, time, weather icon with high and low, and calendar entries.
