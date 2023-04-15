@@ -64,24 +64,57 @@ class AccuWeather(BaseWeatherProvider):
 
         return icon
 
-    # Get weather from Accuweather Daily Forecast API
+    # Get weather from Accuweather APIs
+
+    # https://developer.accuweather.com/accuweather-current-conditions-api/apis/get/currentconditions/v1/%7BlocationKey%7D
+    def get_weather_current(self):
+
+        url = ("http://dataservice.accuweather.com/currentconditions/v1/{}?apikey={}&details=true&metric={}"
+                .format(self.location_key, self.accuweather_apikey, "true" if self.units == "metric" else "false"))
+
+        response_data_current = self.get_response_json_current(url)
+        weather_data_current = response_data_current
+        logging.debug("get_weather_current() - {}".format(weather_data_current))
+
+        daytime_str = str(weather_data_current[0]["IsDayTime"])
+		if daytime_str == "True":
+            daytime = True
+        else:
+            daytime = False
+
+        logging.info(daytime_str)
+        logging.info(daytime)
+
+        accuweather_icon_current = weather_data_current[0]["WeatherIcon"]
+
+        weather_current = {}
+
+        weather_current["current_temperature"] = weather_data_current[0]["Temperature"]["Imperial"]["Value"]
+        weather_current["current_icon"] = self.get_icon_from_accuweather_weathercode(accuweather_icon_current, daytime)
+        weather_current["current_description"] = weather_data_current[0]["WeatherText"]
+        logging.debug(weather_current)
+
+        return weather_current
+
     # https://developer.accuweather.com/accuweather-forecast-api/apis/get/forecasts/v1/daily/1day/%7BlocationKey%7D
-    def get_weather(self):
+    def get_weather_forecast(self):
 
         url = ("http://dataservice.accuweather.com/forecasts/v1/daily/1day/{}?apikey={}&details=true&metric={}"
-               .format(self.location_key, self.accuweather_apikey, "true" if self.units == "metric" else "false"))
+                .format(self.location_key, self.accuweather_apikey, "true" if self.units == "metric" else "false"))
 
-        response_data = self.get_response_json(url)
-        weather_data = response_data
-        logging.debug("get_weather() - {}".format(weather_data))
+        response_data_forecast = self.get_response_json_forecast(url)
+        weather_data_forecast = response_data_forecast
+        logging.debug("get_weather_forecast() - {}".format(weather_data_forecast))
 
         daytime = self.is_daytime(self.location_lat, self.location_long)
-        accuweather_icon = weather_data["DailyForecasts"][0]["Day"]["Icon"] if daytime else weather_data["DailyForecasts"][0]["Night"]["Icon"]
-        # { "temperatureMin": "2.0", "temperatureMax": "15.1", "icon": "mostly_cloudy", "description": "Cloudy with light breezes" }
-        weather = {}
-        weather["temperatureMin"] = weather_data["DailyForecasts"][0]["Temperature"]["Minimum"]["Value"]
-        weather["temperatureMax"] = weather_data["DailyForecasts"][0]["Temperature"]["Maximum"]["Value"]
-        weather["icon"] = self.get_icon_from_accuweather_weathercode(accuweather_icon, daytime)
-        weather["description"] = weather_data["DailyForecasts"][0]["Day"]["ShortPhrase"] if daytime else weather_data["DailyForecasts"][0]["Night"]["ShortPhrase"]
-        logging.debug(weather)
-        return weather
+        accuweather_icon_forecast = weather_data_forecast["DailyForecasts"][0]["Day"]["Icon"] if daytime else weather_data_forecast["DailyForecasts"][0]["Night"]["Icon"]
+
+        weather_forecast = {}
+        weather_forecast["forecast_temperatureMin"] = weather_data_forecast["DailyForecasts"][0]["Temperature"]["Minimum"]["Value"]
+        weather_forecast["forecast_temperatureMax"] = weather_data_forecast["DailyForecasts"][0]["Temperature"]["Maximum"]["Value"]
+        weather_forecast["forecast_icon"] = self.get_icon_from_accuweather_weathercode(accuweather_icon_forecast, daytime)
+        weather_forecast["forecast_description"] = weather_data_forecast["DailyForecasts"][0]["Day"]["ShortPhrase"] if daytime else weather_data_forecast["DailyForecasts"][0]["Night"]["ShortPhrase"]
+		weather_forecast["is_it_daytime"] = daytime
+        logging.debug(weather_forecast)
+
+        return weather_forecast
