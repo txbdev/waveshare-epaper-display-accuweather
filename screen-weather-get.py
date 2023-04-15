@@ -245,7 +245,7 @@ def main():
 
     time_now = get_formatted_time(datetime.datetime.now())
     logging.info(time_now)
-    time_now_font_size = "140px"
+    time_now_font_size = "100px"
 
     if len(time_now) > 6:
         time_now_font_size = str(100 - (len(time_now)-5) * 5) + "px"
